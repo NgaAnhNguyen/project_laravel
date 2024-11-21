@@ -113,7 +113,7 @@ class CheckoutController extends Controller
     public function login_checkout(Request $request)  {
         $meta_title = "Đăng nhập hoặc đăng ký tài khoản";
         $meta_desc = "Đăng nhập hoặc đăng ký tài khoản của shop";
-        $meta_keywords = "đăng nhập xwatch247, xwatch247 login";
+        $meta_keywords = "đăng nhập";
         $meta_canonical = $request->url();
         $image_og = "";
 
@@ -127,6 +127,7 @@ class CheckoutController extends Controller
         ->with('image_og',$image_og);
         
     }
+   
     public function add_customer(Request $request) {
         $data = array();
         $data['customer_name'] = $request->customer_name;
@@ -153,7 +154,7 @@ class CheckoutController extends Controller
     public function checkout(Request $request) {
         $meta_title = "Thông tin giao hàng";
         $meta_desc = "Trang nhập thông tin giao hàng của bạn";
-        $meta_keywords = "giao hàng xwatch247, xwatch247 checkout";
+        $meta_keywords = "giao hàng checkout";
         $meta_canonical = $request->url();
         $image_og = "";
         $city = City::orderBy('matp')->get();
@@ -183,7 +184,7 @@ class CheckoutController extends Controller
     public function payment(Request $request) {
         $meta_title = "Chọn phương thức thanh toán";
         $meta_desc = "Trang Chọn phương thức thanh toán của bạn";
-        $meta_keywords = "thanh toán xwatch247, xwatch247 payment";
+        $meta_keywords = "thanh toán payment";
         $meta_canonical = $request->url();
         $image_og = "";
         $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();

@@ -37,7 +37,7 @@ class ProductController extends Controller
            $meta_desc = $val->product_desc;
            $meta_keywords = isset($val->product_keywords) ? $val->product_keywords : 'Default keywords';
            $meta_canonical = $request->url();
-           $image_og = url('/').'/public/upload/product/'.$val->product_image;
+           $image_og = url('/').'/upload/product/'.$val->product_image;
            // end seo meta
        }
 

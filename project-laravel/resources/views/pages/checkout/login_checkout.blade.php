@@ -3,33 +3,28 @@
 <section id="form"><!--form-->
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-1">
-					<div class="login-form"><!--login form-->
-						<h2>Đăng nhập</h2>
-						<form action="{{URL::to('/login')}}" method="POST">
-							<span><?php
-
-use Illuminate\Support\Facades\Session;
-
-								$message = Session::get('message');
-								if($message) {
-									echo $message;
-									Session::put('message',NULL);
-								}
-							?></span>
-							{{ csrf_field() }}
-							<input type="email" placeholder="Địa chỉ email" name="email_account"/>
-							<input type="password" placeholder="Mật khẩu" name="password_account" />
-							<span>
-								<input type="checkbox" class="checkbox"> 
-								Ghi nhớ đăng nhập
-							</span>
-							<button type="submit" class="btn btn-default">Đăng nhập</button>
-						</form>
-					</div><!--/login form-->
+				<div class="login-form"><!--login form-->
+				<h2>Đăng nhập</h2>
+				<form action="{{URL::to('/login')}}" method="POST"> <!-- Using named route for better flexibility -->
+					@if ($message = Session::get('message')) <!-- Displaying session message -->
+						<span>{{ $message }}</span>
+						{{ Session::forget('message') }}
+					@endif
+					
+					@csrf <!-- CSRF protection -->
+					<input type="email" placeholder="Địa chỉ email" name="email_account" value="{{ old('email_account') }}" required />
+					<input type="password" placeholder="Mật khẩu" name="password_account" required />
+					
+					<span>
+						<input type="checkbox" class="checkbox"> 
+						Ghi nhớ đăng nhập
+					</span>
+					
+					<button type="submit" class="btn btn-default">Đăng nhập</button>
+				</form>
+			</div><!--/login form-->
 				</div>
-				<div class="col-sm-1">
-					<h2 class="or">HOẶC</h2>
-				</div>
+				
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
 						<h2>Đăng ký tài khoản</h2>

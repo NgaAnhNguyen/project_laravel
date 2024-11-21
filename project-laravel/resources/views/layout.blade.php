@@ -37,29 +37,27 @@
 		<div class="header_top"><!--header_top-->
 			<div class="container">
 				<div class="row">
-					<div class="col-sm-6">
-						<div class="contactinfo">
-						<ul class="nav nav-pills">
-						<ul class="nav nav-pills">
-    						<li><a href="{{URL::to('/login-checkout')}}" class="nav-link"><i class="fa fa-sign-in-alt"></i> Login</a></li>
-    						<li><a href="{{URL::to('/login-checkout')}}" class="nav-link"><i class="fa fa-user-plus"></i> Register</a></li>
-						</ul>
+				
+					<div class="col-sm-6" style="float: right;">
+					<div class="login-buttons pull-right" >
+					<ul class="nav navbar-nav">
+						@if (Auth::check())
+							<li><a href="#" class="nav-link"><i class="fa fa-user"></i> {{ Auth::user()->name }}</a></li>
+							
+							@if (Auth::user()->role == 'admin') <!-- Assuming you have a role column -->
+								<li><a href="{{URL::to('/admin_dashboard')}}" class="nav-link"><i class="fa fa-cogs"></i> Admin Dashboard</a></li>
+							@else
+								<li><a href="{{URL::to('/')}}" class="nav-link"><i class="fa fa-home"></i> Customer Dashboard</a></li>
+							@endif
 
-						</ul>
+							<li><a href="{{URL::to('logout')}}" class="nav-link"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a></li>
+						@else
+							<li><a href="{{URL::to('/login')}}" class="nav-link"><i class="fa fa-sign-in"></i> Đăng nhập Người dùng</a></li>
+							<li><a href="{{URL::to('/admin')}}" class="nav-link"><i class="fa fa-lock"></i> Đăng nhập Admin</a></li>
+						@endif
+					</ul>
+				</div>
 
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="social-icons pull-right">
-							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-								<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-							</ul>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div><!--/header_top-->
@@ -95,17 +93,11 @@
 								<li><a href="{{URL::to('/trang-chu')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
 								<li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
-                                        <li><a href="shop.html">Products</a></li>
-										<li><a href="product-details.html">Product Details</a></li> 
+                                        <li><a href="{{URL::to('/trang-chu')}}">Products</a></li>
+										<li><a href="{{URL::to('/trang-chu')}}">Product Details</a></li> 
                                     </ul>
                                 </li> 
-								<li class="dropdown"><a href="#">Tin tức<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="blog.html">Blog List</a></li>
-										<li><a href="blog-single.html">Blog Single</a></li>
-                                    </ul>
-                                </li> 
-								<li><a href="{{URL::to('/view-cart')}}">Giỏ hàng</a></li>
+								<li><a href="{{URL::to('/gio-hang')}}">Giỏ hàng</a></li>
 								<li><a href="{{URL::to('/contact')}}">Liên hệ</a></li>
 							</ul>
 						</div>
@@ -323,14 +315,14 @@
 	
 
   
-    <script src="{{asset('public/frontend/js/jquery.js')}}"></script>
-	<script src="{{asset('public/frontend/js/bootstrap.min.js')}}"></script>
-	<script src="{{asset('public/frontend/js/jquery.scrollUp.min.js')}}"></script>
-	<script src="{{asset('public/frontend/js/price-range.js')}}"></script>
-    <script src="{{asset('public/frontend/js/jquery.prettyPhoto.js')}}"></script>
-    <script src="{{asset('public/frontend/js/main.js')}}"></script>
+    <script src="{{asset('frontend/js/jquery.js')}}"></script>
+	<script src="{{asset('frontend/js/bootstrap.min.js')}}"></script>
+	<script src="{{asset('frontend/js/jquery.scrollUp.min.js')}}"></script>
+	<script src="{{asset('frontend/js/price-range.js')}}"></script>
+    <script src="{{asset('frontend/js/jquery.prettyPhoto.js')}}"></script>
+    <script src="{{asset('frontend/js/main.js')}}"></script>
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script src="{{asset('public/frontend/js/sweetalert.min.js')}}"></script>
+    <script src="{{asset('frontend/js/sweetalert.min.js')}}"></script>
 	<script>
 		$(document).ready(function() {
 			$('.add-to-cart').click(function() {
@@ -342,7 +334,7 @@
 				var cart_product_qty = $('.product_qty_'+id).val();
 				var cart_product_token = $('input[name="_token"]').val();
 				$.ajax({
-					url: '{{ url::to("/add-cart-ajax")}}',
+					url: '{{ URL::to("/add-cart-ajax") }}',
 					method: 'POST',
 					data: {cart_product_id:cart_product_id, cart_product_name:cart_product_name,cart_product_image:cart_product_image,cart_product_price:cart_product_price,
 						cart_product_qty:cart_product_qty,_token:cart_product_token},

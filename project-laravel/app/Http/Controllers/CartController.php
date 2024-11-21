@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 use Darryldecode\Cart\Facades\CartFacade as Cart;
+use Illuminate\Support\Facades\Log;
 
 session_start();
 class CartController extends Controller
@@ -60,6 +61,7 @@ class CartController extends Controller
         $data = $request->all();
         $session_id = substr(md5(microtime()), rand(0,26),5);
         $cart = Session::get('cart');
+        Log::info('Cart before adding:', $cart);
         if($cart == true) {
             $isAvaliable = 0;
             foreach($cart as $key => $product) {
@@ -92,12 +94,16 @@ class CartController extends Controller
          
         }
         Session::save();
+        Log::info('Cart after adding:', Session::get('cart'));
     }
     public function gio_hang(Request $request) {
-        // Session::flush();
+        $cart = Session::get('cart');
+        if (!$cart || count($cart) == 0) {
+            return redirect('/')->with('error', 'Giỏ hàng của bạn đang trống!');
+        }
         $meta_title = "Thông tin giỏ hàng";
         $meta_desc = "Trang Thông tin giỏ hàng của bạn";
-        $meta_keywords = "giỏ hàng xwatch247, xwatch247 cart";
+        $meta_keywords = "giỏ hàng";
         $meta_canonical = $request->url();
         $image_og = "";
         

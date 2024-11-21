@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Session;
                     @foreach($carts as $cart_item)
 						<tr>
 							<td class="cart_product">
-								<a href=""><img src="{{URL::to('public/upload/product/'.$cart_item->options->image)}}" alt="" width="50" height="50"></a>
+								<a href=""><img src="{{URL::to('upload/product/'.$cart_item->options->image)}}" alt="" width="50" height="50"></a>
 							</td>
 							<td class="cart_description">
 								<h4><a href="">{{$cart_item->name}}</a></h4>
