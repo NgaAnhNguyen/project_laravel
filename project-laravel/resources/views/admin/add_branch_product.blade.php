@@ -16,30 +16,38 @@
                         ?>
                         <div class="panel-body">
                             <div class="position-center">
-                                <form role="form" action="{{URL::to('/save-branch-product')}}" method="POST">
+                                <form role="form" action="{{ route('branches.save_branch') }}" method="POST">
                                 {{ csrf_field() }}
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Tên thương hiệu</label>
-                                    <input type="text" name="branch_product_name" class="form-control" id="exampleInputEmail1" placeholder="Tên thương hiệu">
+                                    <input type="text" name="branch_name" class="form-control" id="exampleInputEmail1" placeholder="Tên thương hiệu" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Từ khóa thương hiệu</label>
-                                    <input type="text" name="branch_product_keywords" class="form-control" id="exampleInputEmail1" placeholder="Từ khóa thương hiệu">
+                                    <input type="text" name="branch_product_keywords" class="form-control" id="exampleInputEmail1" placeholder="Từ khóa thương hiệu" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Mô tả thương hiệu</label>
-                                    <textarea rows="8" class="form-control" name="branch_product_desc" id="exampleInputPassword1" placeholder="Mô tả thương hiệu">
+                                    <textarea rows="8" class="form-control" name="branch_desc" id="exampleInputPassword1" placeholder="Mô tả thương hiệu" required>
                                     </textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Hiển thị</label>
-                                    <select class="form-control input-sm m-bot15" name="selectStatus">
-                                        <option value="0">Ẩn</option>
-                                        <option value="1">Hiển thị</option>
-                                    </select>
+                                    <label for="exampleInputFile">Trạng thái</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="branch_status" id="flexRadioDefault1" value="1"  checked>
+                                        <label class="form-check-label fx-6" for="flexRadioDefault1" style=" font-weight: normal;">
+                                          Hoạt động
+                                        </label>
+                                      </div>
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="branch_status" id="flexRadioDefault2" value="0">
+                                        <label class="form-check-label" for="flexRadioDefault2" style=" font-weight: normal;">
+                                          Không hoạt động
+                                        </label>
+                                      </div>
                                 </div>
                                
-                                <button type="submit" class="btn btn-info">Thêm thương hiệu</button>
+                                <button type="submit" class="btn btn-info btn-block">Thêm thương hiệu</button>
                             </form>
                             </div>
 

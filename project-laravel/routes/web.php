@@ -15,28 +15,42 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/trang-chu', [HomeController::class, 'index']);
 Route::get('/tim-kiem', [HomeController::class, 'search']);
 
-// Product Detail
-Route::get('/chi-tiet-san-pham/{product_id}', [ProductController::class, 'detail_product']);
 
 // Category, Brand homepage
 Route::get('/danh-muc-san-pham/{category_id}', [CategoryProducts::class, 'category_by_id']);
 Route::get('/thuong-hieu-san-pham/{brand_id}', [BranchProduct::class, 'brand_by_id']);
- // Product Detail
-
-
- Route::get('/chi-tiet-san-pham/{product_id}', [ProductController::class, 'detail_product']);
- 
 
 // Category Product
 Route::get('/all-category-product', [CategoryProducts::class, 'all_category_product']);
 
 
 // Branch Product
-Route::get('/all-branch-product', [BranchProduct::class, 'all_branch_product']);
+Route::get('/all-branch-product', [BranchProduct::class, 'index'])->name('all-branch');
+Route::group(['prefix' => 'branches', 'as' => 'branches.'], function () {     
+    Route::get('/add-branch-product', [BranchProduct::class, 'createBranch'])->name('create');
+    Route::get('/edit-branch-product/{branch_id}', [BranchProduct::class, 'editBranch'])->name('edit');
+    Route::put('/update-branch-product/{branch_id}', [BranchProduct::class, 'updateBranch'])->name('update');
+    Route::post('/save-branch-product', [BranchProduct::class, 'saveBranch'])->name('save_branch');
+    Route::delete('/delete/{branch_id}', [BranchProduct::class, 'deleteBranch'])->name('delete');
+});
+Route::get('/search-branch', [BranchProduct::class, 'searchBranch'])->name('search_branch');
 
-// Product
 
-Route::get('/all-product', [ProductController::class, 'all_product']);
+// Product Routes
+Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
+    Route::get('/add-product', [ProductController::class, 'showAddProductForm'])->name('create');
+    Route::post('/save-product', [ProductController::class, 'saveProduct'])->name('save');
+    Route::get('/edit-product/{id}', [ProductController::class, 'editProduct'])->name('edit');
+    Route::put('/update-product/{id}', [ProductController::class, 'updateProduct'])->name('update');
+    Route::delete('/delete-product/{product_id}', [ProductController::class, 'deleteProduct'])->name('delete');
+    Route::get('/detail/{product_id}', [ProductController::class, 'showProduct'])->name('show');
+    Route::get('/all-product', [ProductController::class, 'index'])->name('index');
+});
+Route::get('/search-product', [ProductController::class, 'searchProduct'])->name('search-product');
+
+
+// Product Detail
+Route::get('/chi-tiet-san-pham/{product_id}', [ProductController::class, 'detail_product']);
 
 
 // Cart

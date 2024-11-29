@@ -13,7 +13,7 @@
       }
     ?>
     <div class="row w3-res-tb">
-      <div class="col-sm-5 m-b-xs">
+      {{-- <div class="col-sm-5 m-b-xs">
         <select class="input-sm form-control w-sm inline v-middle">
           <option value="0">Bulk action</option>
           <option value="1">Delete selected</option>
@@ -21,16 +21,18 @@
           <option value="3">Export</option>
         </select>
         <button class="btn btn-sm btn-default">Apply</button>                
-      </div>
+      </div> --}}
       <div class="col-sm-4">
       </div>
       <div class="col-sm-3">
-        <div class="input-group">
-          <input type="text" class="input-sm form-control" placeholder="Search">
-          <span class="input-group-btn">
-            <button class="btn btn-sm btn-default" type="button">Go!</button>
-          </span>
-        </div>
+        <form action="{{ route('search_branch') }}" method="GET">
+          <div class="input-group">
+            <input type="text" name="query" class="input-sm form-control" placeholder="Search" value="{{ request()->input('query') }}">
+            <span class="input-group-btn">
+              <button class="btn btn-sm btn-default" type="submit">Go!</button>
+            </span>
+          </div>
+        </form>
       </div>
     </div>
     <div class="table-responsive">
@@ -43,7 +45,9 @@
               </label>
             </th>
             <th>Tên thương hiệu</th>
-            <th>Hiển thị</th>
+            <th>Từ khóa</th>
+            <th>Mô tả</th>
+            <th>Trạng thái</th>
             <th style="width:30px;"></th>
           </tr>
         </thead>
@@ -52,15 +56,17 @@
           <tr>
             <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
             <td>{{ $cate_pro->branch_name}}</td>
+            <td>{{ $cate_pro->branch_product_keywords }}
+            <td>{{ $cate_pro->branch_desc }}
             <td><span class="text-ellipsis">
               <?php
                 if($cate_pro->branch_status == 0) {
               ?>
-                <a href='{{URL::to("/active-branch"."$cate_pro->branch_id")}}'>
+                <a href='#'>
                   <i class='fa fa-thumbs-down'></i>
                 </a>
               <?php } else { ?>
-                <a href='{{URL::to("/unactive-branch"."$cate_pro->branch_id")}}'>
+                <a href='#'>
                   <i class='fa fa-thumbs-up'></i>
                 </a>
               <?php 
@@ -69,12 +75,20 @@
             </span></td>
             
             <td>
-              <a href="{{URL::to('edit-branch-product/'.$cate_pro->branch_id)}}" class="active styling-edit" ui-toggle-class="">
+              <a href="{{ route('branches.edit', ['branch_id' => $cate_pro->branch_id]) }}" class="active styling-edit" ui-toggle-class="">
                 <i class="fa fa-pencil-square-o text-success text-active"></i>
               </a>
-              <a onclick="return confirm('Bạn có chắc là muốn xóa thương hiệu sản phẩm này không ?')" href="{{URL::to('delete-branch-product/'.$cate_pro->branch_id)}}" class="active styling-edit" ui-toggle-class="">
-                <i class="fa fa-times text-danger text"></i>
-              </a>
+              
+                <span>
+                  <form action="{{ route('branches.delete', ['branch_id' => $cate_pro->branch_id]) }}" method="POST" style="display:inline;">
+                      {{ csrf_field() }}
+                      {{ method_field('DELETE') }}
+                      <button type="submit" class="active styling-edit" onclick="return confirm('Bạn có chắc là muốn xóa thương hiệu sản phẩm này không ?')" style="border:none; background:none; padding:0; cursor:pointer;">
+                          <i class="fa fa-times text-danger text"></i>
+                      </button>
+                  </form>
+                </span>
+              
             </td>
           </tr>
           @endforeach
@@ -86,18 +100,33 @@
       <div class="row">
         
         <div class="col-sm-5 text-center">
-          <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
+          <small class="text-muted inline m-t-sm m-b-sm">showing items</small>
         </div>
-        <div class="col-sm-7 text-right text-center-xs">                
+        <div class="col-sm-7 text-right text-center-xs">
           <ul class="pagination pagination-sm m-t-none m-b-none">
-            <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-            <li><a href="">1</a></li>
-            <li><a href="">2</a></li>
-            <li><a href="">3</a></li>
-            <li><a href="">4</a></li>
-            <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
+              <!-- Liên kết trang trước -->
+              @if ($all_branch_product->onFirstPage())
+                  <li class="disabled"><a href="#"><i class="fa fa-chevron-left"></i></a></li>
+              @else
+                  <li><a href="{{ $all_branch_product->previousPageUrl() }}"><i class="fa fa-chevron-left"></i></a></li>
+              @endif
+      
+              <!-- Các trang phân trang -->
+              @foreach ($all_branch_product->getUrlRange(1, $all_branch_product->lastPage()) as $page => $url)
+                  <li class="{{ $page == $all_branch_product->currentPage() ? 'active' : '' }}">
+                      <a href="{{ $url }}">{{ $page }}</a>
+                  </li>
+              @endforeach
+      
+              <!-- Liên kết trang sau -->
+              @if ($all_branch_product->hasMorePages())
+                  <li><a href="{{ $all_branch_product->nextPageUrl() }}"><i class="fa fa-chevron-right"></i></a></li>
+              @else
+                  <li class="disabled"><a href="#"><i class="fa fa-chevron-right"></i></a></li>
+              @endif
           </ul>
-        </div>
+      </div>
+      
       </div>
     </footer>
   </div>
