@@ -1,22 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Request;
 
-
-class HomeController extends Controller
+class PageController extends Controller
 {
-
-    public function dashboard()
+    // Xử lý trang welcome
+    public function welcome()
     {
         $category_product = Category::all();
         $branch_product = Brand::all();
@@ -26,8 +20,23 @@ class HomeController extends Controller
         $meta_keywords = "shop, products, online store, ecommerce";
         $meta_canonical = url()->current();  // Current URL for canonical link
         $image_og = "images/og-image.jpg";   // Example image path for Open Graph
-        return view('dashboard', compact('meta_desc', 'meta_title', 'meta_keywords', 'meta_canonical', 'image_og', 'products', 'category_product', 'branch_product'));
+        return view('welcome', compact('meta_desc', 'meta_title', 'meta_keywords', 'meta_canonical', 'image_og', 'products', 'category_product', 'branch_product'));
     }
+
+    // Xử lý trang dashboard
+    // public function dashboard()
+    // {
+    //     $category_product = Category::all();
+    //     $branch_product = Brand::all();
+    //     $products = Product::all();  // Retrieve products
+    //     $meta_desc = "Welcome to our shop, where you can find a variety of products!";
+    //     $meta_title = "Shop Homepage";
+    //     $meta_keywords = "shop, products, online store, ecommerce";
+    //     $meta_canonical = url()->current();  // Current URL for canonical link
+    //     $image_og = "images/og-image.jpg";   // Example image path for Open Graph
+    //     return view('dashboard', compact('meta_desc', 'meta_title', 'meta_keywords', 'meta_canonical', 'image_og', 'products', 'category_product', 'branch_product'));
+
+    // }
 
     public function search(Request $request)
     {
@@ -55,3 +64,4 @@ class HomeController extends Controller
             ->with('image_og', $image_og);
     }
 }
+

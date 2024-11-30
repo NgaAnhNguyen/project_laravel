@@ -67,7 +67,7 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="logo pull-left">
-							<a href="{{URL::to('trang-chu')}}"><img src="{{URL::to('public/frontend/img/home/logo.png')}}" alt="" /></a>
+							<a href="{{URL::to('dashboard')}}"><img src="{{URL::to('public/frontend/img/home/logo.png')}}" alt="" /></a>
 						</div>
 						
 					</div>
@@ -90,11 +90,11 @@
 						</div>
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a href="{{URL::to('/trang-chu')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
+								<li><a href="{{URL::to('/dashboard')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
 								<li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
-                                        <li><a href="{{URL::to('/trang-chu')}}">Products</a></li>
-										<li><a href="{{URL::to('/trang-chu')}}">Product Details</a></li> 
+                                        <li><a href="{{URL::to('/dashboard')}}">Products</a></li>
+										<li><a href="{{URL::to('/dashboard')}}">Product Details</a></li> 
                                     </ul>
                                 </li> 
 								<li><a href="{{URL::to('/gio-hang')}}">Giỏ hàng</a></li>
