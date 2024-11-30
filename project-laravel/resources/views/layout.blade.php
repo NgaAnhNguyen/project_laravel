@@ -39,42 +39,37 @@
 				<div class="row">
 				
 					<div class="col-sm-6" style="float: right;">
-					<div class="login-buttons pull-right" >
-					<ul class="nav navbar-nav">
-						@if (Auth::check())
-							<li><a href="#" class="nav-link"><i class="fa fa-user"></i> {{ Auth::user()->name }}</a></li>
-							
-							@if (Auth::user()->role == 'admin') <!-- Assuming you have a role column -->
-								<li><a href="{{URL::to('/admin_dashboard')}}" class="nav-link"><i class="fa fa-cogs"></i> Admin Dashboard</a></li>
-							@else
-								<li><a href="{{URL::to('/')}}" class="nav-link"><i class="fa fa-home"></i> Customer Dashboard</a></li>
-							@endif
+						<div class="login-buttons pull-right" >
+							<ul class="nav navbar-nav">
+								@if (Auth::check())
+									<li><a href="#" class="nav-link"><i class="fa fa-user"></i> {{ Auth::user()->name }}</a></li>
+									
+									@if (Auth::user()->role == 'admin') <!-- Assuming you have a role column -->
+										<li><a href="{{URL::to('/admin_dashboard')}}" class="nav-link"><i class="fa fa-cogs"></i> Admin Dashboard</a></li>
+									@else
+										<li><a href="{{URL::to('/')}}" class="nav-link"><i class="fa fa-home"></i> Customer Dashboard</a></li>
+									@endif
 
-							<li><a href="{{URL::to('logout')}}" class="nav-link"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a></li>
-						@else
-							<li><a href="{{URL::to('/login')}}" class="nav-link"><i class="fa fa-sign-in"></i> Đăng nhập Người dùng</a></li>
-							<li><a href="{{URL::to('/admin')}}" class="nav-link"><i class="fa fa-lock"></i> Đăng nhập Admin</a></li>
-						@endif
-					</ul>
-				</div>
-
-				</div>
-			</div>
-		</div><!--/header_top-->
-		
-		<div class="header-middle"><!--header-middle-->
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="logo pull-left">
-							<a href="{{URL::to('trang-chu')}}"><img src="{{URL::to('public/frontend/img/home/logo.png')}}" alt="" /></a>
+									<li><a href="{{URL::to('logout')}}" class="nav-link"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a></li>
+								@else
+									<li><a href="{{URL::to('/login')}}" class="nav-link"><i class="fa fa-sign-in"></i> Đăng nhập Người dùng</a></li>
+									<li><a href="{{URL::to('/admin')}}" class="nav-link"><i class="fa fa-lock"></i> Đăng nhập Admin</a></li>
+								@endif
+							</ul>
+					
+						</div>
+					</div>
+					<div class="col-sm-4 m-3">
+						<div class="logo pull-left ">
+							<a href="{{URL::to('trang-chu')}}"><img src="{{URL::to('frontend/img/home/logo.png')}}" alt="" /></a>
 						</div>
 						
 					</div>
-				
-				</div>
+
 			</div>
-		</div><!--/header-middle-->
+		</div><!--/header_top-->
+		
+		
 	
 		<div class="header-bottom"><!--header-bottom-->
 			<div class="container">
@@ -91,11 +86,8 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
-								<li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="{{URL::to('/trang-chu')}}">Products</a></li>
-										<li><a href="{{URL::to('/trang-chu')}}">Product Details</a></li> 
-                                    </ul>
+								<li class="dropdown"><a href="#">Sản phẩm</a>
+                                    
                                 </li> 
 								<li><a href="{{URL::to('/gio-hang')}}">Giỏ hàng</a></li>
 								<li><a href="{{URL::to('/contact')}}">Liên hệ</a></li>
@@ -117,13 +109,13 @@
 	</header><!--/header-->
 	
 	
-	<section>
+	<section id="section">
 		<div class="container" style="color:blue">
-			<div class="row">
+			<div class="row mt-4">
 				<div class="col-sm-3">
 					<div class="left-sidebar">
-						<h2  style="color:cornflowerblue">Danh mục sản phẩm</h2>
-						<div class="panel-group category-products" id="accordian"><!--category-productsr-->
+						<h2 style="color:cornflowerblue">Danh mục sản phẩm</h2>
+						<div class="panel-group category-products" id="accordian">
 							@foreach($category_product as $key => $cate)
 							<div class="panel panel-default">
 								<div class="panel-heading">
@@ -131,31 +123,27 @@
 								</div>
 							</div>
 							@endforeach
-						</div><!--/category-products-->
-					
-						<div class="brands_products"><!--brands_products-->
+						</div>
+	
+						<div class="brands_products">
 							<h2 style="color:cornflowerblue">Thương hiệu sản phẩm</h2>
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
 									@foreach($branch_product as $key => $branch)
-									<li><a href="{{URL::to('thuong-hieu-san-pham/'.$branch->branch_id)}}"> <span class="pull-right">
-										(50)
-										</span>{{$branch->branch_name}}</a></li>
+									<li><a href="{{URL::to('thuong-hieu-san-pham/'.$branch->branch_id)}}"> <span class="pull-right">(50)</span>{{$branch->branch_name}}</a></li>
 									@endforeach
 								</ul>
 							</div>
-						</div><!--/brands_products-->
-						
-						
-						
-						<div class="shipping text-center"><!--shipping-->
-							<img src="{{URL::to('public/frontend/img/home/shipping.jpg')}}" alt="" />
-						</div><!--/shipping-->
-					
+						</div>
+	
+						<div class="shipping text-center">
+							<img src="{{URL::to('frontend/img/home/shipping.jpg')}}" alt="" />
+						</div>
 					</div>
 				</div>
-				
-				<div class="col-sm-9 padding-right">
+	
+				<!-- Cột bên phải (nội dung chính) -->
+				<div class="col-sm-9 ">
 					@yield('content')
 				</div>
 			</div>
@@ -177,7 +165,7 @@
 							<div class="video-gallery text-center">
 								<a href="#">
 									<div class="iframe-img">
-										<img src="{{URL::to('public/frontend/img/home/iframe1.png')}}" alt="" />
+										<img src="{{URL::to('frontend/img/home/iframe1.png')}}" alt="" />
 									</div>
 									<div class="overlay-icon">
 										<i class="fa fa-play-circle-o"></i>
@@ -192,7 +180,7 @@
 							<div class="video-gallery text-center">
 								<a href="#">
 									<div class="iframe-img">
-										<img src="{{URL::to('public/frontend/img/home/iframe2.png')}}" alt="" />
+										<img src="{{URL::to('frontend/img/home/iframe2.png')}}" alt="" />
 									</div>
 									<div class="overlay-icon">
 										<i class="fa fa-play-circle-o"></i>
@@ -207,7 +195,7 @@
 							<div class="video-gallery text-center">
 								<a href="#">
 									<div class="iframe-img">
-										<img src="{{URL::to('public/frontend/img/home/iframe3.png')}}" alt="" />
+										<img src="{{URL::to('frontend/img/home/iframe3.png')}}" alt="" />
 									</div>
 									<div class="overlay-icon">
 										<i class="fa fa-play-circle-o"></i>
@@ -222,7 +210,7 @@
 							<div class="video-gallery text-center">
 								<a href="#">
 									<div class="iframe-img">
-										<img src="{{URL::to('public/frontend/img/home/iframe4.png')}}" alt="" />
+										<img src="{{URL::to('frontend/img/home/iframe4.png')}}" alt="" />
 									</div>
 									<div class="overlay-icon">
 										<i class="fa fa-play-circle-o"></i>
@@ -235,8 +223,8 @@
 					</div>
 					<div class="col-sm-3">
 						<div class="address">
-							<img src="{{URL::to('public/frontend/img/home/map.png')}}" alt="" />
-							<p>505 S Atlantic Ave Virginia Beach, VA(Virginia)</p>
+							<img src="{{URL::to('frontend/img/home/map.png')}}" alt="" />
+							<p>505 Da Nang, Viet Nam</p>
 						</div>
 					</div>
 				</div>

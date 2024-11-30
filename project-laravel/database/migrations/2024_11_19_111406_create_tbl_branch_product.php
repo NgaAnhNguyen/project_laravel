@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('branch_id');
             $table->string('branch_name');
             $table->text('branch_desc');
+            $table->text('branch_product_keywords');
             $table->integer('branch_status');
             $table->timestamps();
         });

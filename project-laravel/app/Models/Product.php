@@ -23,11 +23,11 @@ class Product extends Model
 
     public function brand()
     {
-        return $this->belongsTo('App\Models\Brand');
+        return $this->belongsTo('App\Models\Brand', 'branch_id');
     }
 
     public function category()
     {
-        return $this->belongsTo('App\Models\Category');
+        return $this->belongsTo('App\Models\Category', 'category_id');
     }
 }
