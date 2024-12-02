@@ -7,6 +7,8 @@ use App\Models\Feeship;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Shipping;
+use App\Models\User;
+use App\Models\UserVerify;
 use App\Models\Wards;
 use App\Models\Province;
 use Illuminate\Http\Request;
@@ -14,8 +16,14 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use App\Rules\Captcha;
+
 
 session_start();
 
@@ -205,8 +213,92 @@ class CheckoutController extends Controller
         }
     }
 
+
+
+    public function add_customer(Request $request) {
+        // Validate request data
+       // Validate request data
+       $validated = $request->validate([
+        'customer_name' => 'required|min:5',
+        'customer_email' => 'required|email|unique:users,email', // Kiểm tra trùng lặp email
+        'customer_phone' => 'required|numeric|min:9',
+        'customer_password' => 'required|min:6',
+        'g-recaptcha-response' => new Captcha(),
+    ]);
+    $password = Hash::make($request->password_account);
+    // Bước 1: Lưu vào bảng 'users' nhưng chưa kích hoạt tài khoản
+    $user = User::create([
+        'name' => $request->customer_name,
+        'email' => $request->customer_email,
+        'password' => Hash::make($request->customer_password),
+        'is_active' => false, // Thêm cột `is_active` nếu chưa có
+    ]);
+
+
+    // Bước 2: Tạo token xác thực email
+    $token = Str::random(64);
+    UserVerify::create([
+        'user_id' => $user->id,
+        'token' => $token,
+    ]);
+
+
+    // Bước 3: Gửi email xác thực
+    Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
+        $message->to($request->customer_email);
+        $message->subject('Verify Your Email Address');
+    });
+    DB::table('tbl_customers')->insert([
+        'customer_name' => $request->customer_name,
+        'customer_email' => $request->customer_email,
+        'customer_phone' => $request->customer_phone,
+        'customer_password' => Hash::make($request->customer_password),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+        // Chuyển hướng đến trang checkout
+        return Redirect::to('/verify-email-notice')->with('info', 'Please verify your email before proceeding to checkout.');
+        
+    }
+    public function verify_email($token) {
+        $verifyUser = UserVerify::where('token', $token)->first();
+
+        if (!$verifyUser) {
+            return redirect('/login')->with('error', 'Invalid verification link.');
+        }
+    
+        $user = $verifyUser->user;
+        if ($user->is_active) {
+            return redirect('/login')->with('info', 'Your email is already verified.');
+        }
+    
+        $user->is_active = true;
+        $user->save();
+    
+        $verifyUser->delete();
+        return Redirect::to('/checkout');
+
+    }
+    public function checkout_(Request $request) {
+        $meta_title = "Thông tin giao hàng";
+        $meta_desc = "Trang nhập thông tin giao hàng của bạn";
+        $meta_keywords = "giao hàng checkout";
+        $meta_canonical = $request->url();
+        $image_og = "";
+        $city = City::orderBy('matp')->get();
+        $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
+        $branch_product = DB::table('tbl_branch_product')->where('branch_status','1')->orderby('branch_id','desc')->get();
+        return view('pages.checkout.view_checkout')->with('category_product',$cate_product)->with('branch_product',$branch_product)
+        ->with('meta_title',$meta_title)
+        ->with('meta_desc',$meta_desc)
+        ->with('meta_keywords',$meta_keywords)
+        ->with('meta_canonical',$meta_canonical)
+        ->with('image_og',$image_og)->with('cityData',$city);
+    }
+
     public function save_checkout_customer(Request $request)
     {
+
         $data = array();
         $data['shipping_name'] = $request->shipping_name;
         $data['shipping_email'] = $request->shipping_email;
@@ -242,9 +334,50 @@ class CheckoutController extends Controller
             ->with('meta_canonical', $meta_canonical)
             ->with('image_og', $image_og);
     }
+
+    public function logout_checkout() {
+        Session::put('shipping_id',null);
+        Session::put('customer_id',null);
+        Session::put('customer_name',null);
+        return Redirect::to('/login-checkout');
+    }
+    public function login_customer(Request $request) {
+        $email = $request->email_account;
+        $password = $request->password_account;
+    
+        // Lấy thông tin khách hàng từ cơ sở dữ liệu
+        $result = DB::table('tbl_customers')->where('customer_email', $email)->first();
+        
+        if ($result && Hash::check($password, $result->customer_password)) {
+            // Nếu mật khẩu đúng, lưu thông tin vào session và chuyển hướng
+            Auth::loginUsingId($result->customer_id);
+            
+            Session::put('customer_id', $result->customer_id);
+            Session::put('customer_name', $result->customer_name);
+            return Redirect::to('/checkout');
+        } else {
+            // Nếu thông tin đăng nhập sai, hiển thị thông báo lỗi
+            Session::put('message', 'Mật khẩu hoặc tài khoản không đúng, vui lòng nhập lại!');
+            return Redirect::to('/login-checkout');
+        }
+    }
+    
+    public function logout(Request $request)
+{
+    Auth::logout(); // Gọi logout từ facade Auth
+
+    $request->session()->invalidate(); // Xóa session
+    $request->session()->regenerateToken(); // Tạo lại CSRF token mới
+
+    return redirect('/'); // Điều hướng sau khi đăng xuất
+}
+
+        
+
     
     public function manage_order()
     {
+
         $this->AuthLogin();
         $all_order = DB::table('tbl_order')->join('tbl_customer', 'tbl_order.customer_id', '=', 'tbl_customer.customer_id')
             ->select('tbl_order.*', 'tbl_customer.customer_name')
@@ -273,6 +406,7 @@ class CheckoutController extends Controller
         Session::put('message', 'Xóa đơn hàng thành công');
         return Redirect::to('/manage-order');
     }
+
     public function checkout(Request $request)
     {
         // Khai báo các meta thông tin cho SEO

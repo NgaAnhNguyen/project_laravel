@@ -35,16 +35,17 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-        'customer' => [
-            'driver' => 'session',  
-            'provider' => 'customers', 
-        ],
+   'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
     ],
+
+    'customers' => [
+        'driver' => 'session',
+        'provider' => 'customers',  // Thêm guard cho khách hàng
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -63,18 +64,18 @@ return [
     |
     */
 
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
-        
+'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => env('AUTH_MODEL', App\Models\User::class),
     ],
+
+    'customers' => [
+        'driver' => 'database',  // Sử dụng driver database
+        'table' => 'tbl_customers',  // Tên bảng customers
+        'primary_key' => 'customer_id',  // Chỉ định khóa chính là customer_id
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
