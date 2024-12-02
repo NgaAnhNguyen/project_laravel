@@ -16,52 +16,36 @@
                         ?>
                         <div class="panel-body">
                             <div class="position-center">
-                                <form role="form" action="{{URL::to('/save-product')}}" method="POST" enctype='multipart/form-data'>
+                                <form role="form" action="{{ route('products.save') }}" method="POST" enctype='multipart/form-data'>
                                 {{ csrf_field() }}
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Tên sản phẩm</label>
-                                    <input type="text" value="{{ old('product_name') }}" name="product_name" class="form-control" id="exampleInputEmail1" placeholder="Tên sản phẩm">
-                                    @error('product_name')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                    <input type="text" name="product_name" class="form-control" id="exampleInputEmail1" placeholder="Tên sản phẩm">
+                                    
                                 </div>
                                
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Giá sản phẩm</label>
-                                    <input type="text" value="{{ old('product_price') }}" name="product_price" class="form-control" id="exampleInputEmail1" placeholder="Giá sản phẩm">
-                                    @error('product_price')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                    <input type="text" name="product_price" class="form-control" id="exampleInputEmail1" placeholder="Giá sản phẩm">
+                                    
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Hình ảnh sản phẩm</label>
                                     <input type="file" name="product_image" class="form-control" id="exampleInputEmail1">
-                                    @error('product_image')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                    
                                 </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Từ khóa sản phẩm</label>
-                                    <input type="text" value="{{ old('product_keywords') }}" name="product_keywords" class="form-control" id="exampleInputEmail1" placeholder="Từ khóa sản phẩm">
-                                    @error('product_keywords')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                               
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Mô tả sản phẩm</label>
-                                    <textarea rows="8" class="form-control" name="product_desc" id="ckeditor1" placeholder="Mô tả sản phẩm">
+                                    <textarea rows="5" class="form-control" name="product_desc" id="exampleInputPassword1" placeholder="Mô tả sản phẩm">
                                     </textarea>
-                                    @error('product_desc')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                    
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Nội dung sản phẩm</label>
-                                    <textarea rows="8" class="form-control" name="product_content" id="ckeditor2" placeholder="Mô tả sản phẩm">
+                                    <textarea rows="5" class="form-control" name="product_content" id="exampleInputPassword1" placeholder="Mô tả sản phẩm">
                                     </textarea>
-                                    @error('product_content')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                    
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputFile">Danh mục</label>
@@ -80,14 +64,22 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Hiển thị</label>
-                                    <select class="form-control input-sm m-bot15" name="selectProductStatus">
-                                        <option value="0">Ẩn</option>
-                                        <option value="1">Hiển thị</option>
-                                    </select>
+                                    <label for="exampleInputFile">Trạng thái</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="product_status" id="flexRadioDefault1" value="1"  checked>
+                                        <label class="form-check-label fx-6" for="flexRadioDefault1" style=" font-weight: normal;">
+                                          Hoạt động
+                                        </label>
+                                      </div>
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="product_status" id="flexRadioDefault2" value="0">
+                                        <label class="form-check-label" for="flexRadioDefault2" style=" font-weight: normal;">
+                                          Không hoạt động
+                                        </label>
+                                      </div>
                                 </div>
                                
-                                <button type="submit" class="btn btn-info">Thêm sản phẩm</button>
+                                <button type="submit" class="btn btn-info btn-block">Thêm sản phẩm</button>
                             </form>
                             </div>
 
