@@ -54,7 +54,6 @@
                 </div>
             </div>
 					<div class="col-sm-6" style="float: right;">
-
 						<div class="login-buttons pull-right">
 							<ul class="nav navbar-nav">
 								@if (session('customer_id'))
@@ -89,6 +88,7 @@
 								
 								</li>
 								@endif
+
 
 				</div>
 			</div>
@@ -188,7 +188,9 @@
 	</header><!--/header-->
 
 
+
 	<section>
+
 
 	
 	<section id="section">
@@ -198,9 +200,11 @@
 					<div class="left-sidebar">
 						<h2 style="color:cornflowerblue">Danh mục sản phẩm</h2>
 
+
 						<div class="panel-group category-products" id="accordian"><!--category-productsr-->
 
 						<div class="panel-group category-products" id="accordian">
+
 
 							@foreach($category_product as $key => $cate)
 							<div class="panel panel-default">
@@ -211,6 +215,7 @@
 							@endforeach
 
 
+
 						</div>
 	
 						<div class="brands_products">
@@ -219,6 +224,7 @@
 							<div class="brands-name">
 								<ul class="nav nav-pills nav-stacked">
 									@foreach($branch_product as $key => $branch)
+
 									<li><a href="{{URL::to('thuong-hieu-san-pham/'.$branch->branch_id)}}"> <span class="pull-right">
 												(50)
 											</span>{{$branch->branch_name}}</a></li>
@@ -248,6 +254,7 @@
 						</div>
 					</div>
 				</div>
+
 	
 				<!-- Cột bên phải (nội dung chính) -->
 				<div class="col-sm-9 ">
@@ -409,7 +416,7 @@
 		
 	</footer><!--/Footer-->
 	
->>>>>>> 338caeca67984653853bf2393aeb945eb81813d2
+
 
 	<footer id="footer"><!--Footer-->
     <div class="footer-top">

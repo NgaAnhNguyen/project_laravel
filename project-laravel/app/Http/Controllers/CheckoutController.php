@@ -16,6 +16,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -360,69 +361,7 @@ class CheckoutController extends Controller
             return Redirect::to('/login-checkout');
         }
     }
-    public function save_order(Request $request) {
-        if (!Session::has('customer_id') || !Session::has('shipping_id')) {
-            return redirect('/login-checkout')->with('error', 'Please login before placing an order.');
-        }
     
-        // insert payment method
-        $data = array();
-        $data['payment_method'] = $request->payment_value;
-        $data['payment_status'] = "Đang chờ xử lý";
-    
-        $payment_id = DB::table('tbl_payment')->insertGetId($data);
-    
-        $data_order = array();
-        $data_order['customer_id'] = Session::get('customer_id');
-        $data_order['shipping_id'] = Session::get('shipping_id');
-        $data_order['payment_id'] = $payment_id;
-        $data_order['order_total'] = Cart::total();
-        $data_order['order_status'] = 'Đang chờ xử lý';
-        $order_id = DB::table('tbl_order')->insertGetId($data_order);
-    
-        $data_detail_order = array();
-        $content = Cart::content();
-    
-        foreach ($content as $v_content) {
-            $data_detail_order['order_id'] = $order_id;
-            $data_detail_order['product_id'] = $v_content->id;
-            $data_detail_order['product_name'] = $v_content->name;
-            $data_detail_order['product_price'] = $v_content->price;
-            $data_detail_order['product_sales_quanlity'] = $v_content->qty;
-            DB::table('tbl_order_details')->insert($data_detail_order);
-        }
-    
-        switch ($data['payment_method']) {
-            case 1:
-                // Handle ATM Card Payment
-                Cart::destroy();
-                return redirect()->route('order.success')->with('message', 'Đơn này trả Thẻ ATM');
-            case 2:
-                // Handle Cash on Delivery
-                Cart::destroy();
-                $cate_product = DB::table('tbl_category_product')->where('category_status', '1')->orderby('category_id', 'desc')->get();
-                $branch_product = DB::table('tbl_branch_product')->where('branch_status', '1')->orderby('branch_id', 'desc')->get();
-    
-                $meta_title = "Đặt hàng thành công";
-                $meta_desc = "Order placed successfully. Your order will be delivered soon.";
-                $meta_keywords = "order, success, delivery, online shopping";
-                $meta_canonical = $request->url();
-                $image_og = "";
-    
-                return view('pages.checkout.handcash')->with('category_product', $cate_product)->with('branch_product', $branch_product)
-                    ->with('meta_title', $meta_title)
-                    ->with('meta_desc', $meta_desc)
-                    ->with('meta_keywords', $meta_keywords)
-                    ->with('meta_canonical', $meta_canonical)
-                    ->with('image_og', $image_og);
-            case 3:
-                // Handle ATM Card Payment
-                Cart::destroy();
-                return redirect()->route('order.success')->with('message', 'Đơn này trả Thẻ ATM');
-            default:
-                return redirect()->back()->with('error', 'Invalid payment method.');
-        }
-    }
     public function logout(Request $request)
 {
     Auth::logout(); // Gọi logout từ facade Auth
@@ -468,10 +407,6 @@ class CheckoutController extends Controller
         return Redirect::to('/manage-order');
     }
 
-    
-    
-
-
     public function checkout(Request $request)
     {
         // Khai báo các meta thông tin cho SEO
@@ -514,4 +449,3 @@ class CheckoutController extends Controller
             ->with('totalAmountWithShipping', $totalAmountWithShipping);  // Truyền tổng tiền có phí ship vào view
     }
 }
-

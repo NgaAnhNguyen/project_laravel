@@ -19,7 +19,9 @@
 						<input type="checkbox" class="checkbox"> 
 						Ghi nhớ đăng nhập
 					</span>
+
 					<h5><a href="{{URL::to('/forget-password')}}">Quên mật khẩu</a></h5>
+
 					
 					<button type="submit" class="btn btn-default">Đăng nhập</button>
 				</form>
@@ -30,7 +32,9 @@
 					<div class="signup-form"><!--sign up form-->
 						<h2>Đăng ký tài khoản</h2>
 						<form action="{{URL::to('/add-customer')}}" method="POST">
+
 						@csrf
+
 							{{csrf_field()}}
 							<input type="text" name="customer_name" placeholder="Họ tên" id="customer_name"/>
 							@error('customer_name')
