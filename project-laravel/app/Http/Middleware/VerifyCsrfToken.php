@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'add-customer',  // Thêm route của bạn vào đây
     ];
 }

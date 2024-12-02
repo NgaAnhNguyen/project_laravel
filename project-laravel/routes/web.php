@@ -8,7 +8,9 @@ use App\Http\Controllers\BranchProduct;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminController;
-
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use Illuminate\Support\Facades\Auth;
 
 // Frontend Routes
 Route::get('/', [HomeController::class, 'index']);
@@ -70,7 +72,19 @@ Route::get('/dashboard', [AdminController::class, 'admin_layout']);
 Route::get('/logout', [AdminController::class, 'logout']);
 Route::post('/admin_dashboard', [AdminController::class, 'dashboard']);
 
+Route::get('/forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm']);
+Route::post('/forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm']);
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm']);
 
 
 
+Route::get('/verify-email/{token}', [CheckoutController::class, 'verify_email']);
 
+Route::get('/verify-email-notice', function() {
+    return view('email.verifyNotice');
+})->name('email.verify.notice');
+
+
+Route::post('/logout',[CheckoutController::class,'logout']);

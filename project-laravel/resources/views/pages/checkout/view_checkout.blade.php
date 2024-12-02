@@ -124,7 +124,7 @@ use Illuminate\Support\Facades\Session;
 								<a href=""><img src="{{URL::to('public/upload/product/'.$cart['product_image'])}}" alt="" width="50" height="50"></a>
 							</td>
 							<td class="cart_description">
-								<h4><a href="{{URL::to('/chi-tiet-san-pham/'.$cart['product_id'])}}">{{$cart['product_name']}}</a></h4>
+								<h4><a href="{{URL::to('chi-tiet-san-pham/'.$cart['product_id'])}}">{{$cart['product_name']}}</a></h4>
 								<!-- <p>Mã: {{$cart['product_id']}}</p> -->
 							</td>
 							<td class="cart_price">
@@ -158,18 +158,21 @@ use Illuminate\Support\Facades\Session;
 								<input type="submit" value="Cập nhật giỏ hàng" class="submitQty check_out">
 								<a href="{{URL::to('/delete-cart')}}" class="submitQty check_out">Xóa tất cả sản phẩm</a>
 								
-									<?php
+								<?php
 									$customer_id = Session::get('customer_id');
-								
-									if($customer_id != NULL) {
+									$cart = Session::get('cart');
 									?>
-									<a class="check_out" onclick="return alert('Bạn chưa có gì trong giỏ hàng, vui lòng thêm một sản phẩm')" href="#">Thanh toán</a>
-									<?php }
-									elseif($customer_id != NULL){?>
-										<a class="check_out" href="{{URL::to('/checkout')}}">Thanh toán</a>
-									<?php }  else { ?>
-										<a class="check_out" href="{{URL::to('/login-checkout')}}">Thanh toán</a>
-									<?php } ?>
+
+									@if (!$cart || count($cart) == 0)
+										<!-- Nếu giỏ hàng trống -->
+										<a class="check_out" onclick="return alert('Bạn chưa có gì trong giỏ hàng, vui lòng thêm một sản phẩm')" href="#">Thanh toán</a>
+									@elseif ($customer_id != NULL)
+										<!-- Nếu khách hàng đã đăng nhập -->
+										<a class="check_out" href="{{ URL::to('/checkout') }}">Thanh toán</a>
+									@else
+										<!-- Nếu khách hàng chưa đăng nhập -->
+										<a class="check_out" href="{{ URL::to('/login-checkout') }}">Thanh toán</a>
+									@endif
 								<div class="pull-right"><ul>
 									<li>Tổng tiền sản phẩm: <span>{{number_format($totalcartPrice,0,',','.')}} đ</span></li>
 											
