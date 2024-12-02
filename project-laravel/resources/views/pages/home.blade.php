@@ -19,7 +19,7 @@
 
                         <!-- Product details and link to product page -->
                         <a href="{{URL::to('chi-tiet-san-pham/'.$pro->product_id)}}">
-                            <img src="{{URL::to('public/upload/product/'.$pro->product_image)}}" alt="{{$pro->product_name}}" />
+                            <img src="{{URL::to('/upload/product/'.$pro->product_image)}}" alt="{{$pro->product_name}}" />
                             <h2>{{number_format($pro->product_price) . " VND"}}</h2>
                             <p>{{$pro->product_name}}</p>
                         </a>

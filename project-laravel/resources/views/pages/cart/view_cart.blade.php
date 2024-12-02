@@ -107,8 +107,6 @@ use Illuminate\Support\Facades\Session;
 									<?php }
 									elseif($customer_id != NULL && Cart::getContent()->count() != 0){?>
 										<a class="btn btn-default check_out" href="{{URL::to('/checkout')}}">Thanh toán</a>
-									<?php }  else { ?>
-										<a class="btn btn-default check_out" href="{{URL::to('/login-checkout')}}">Thanh toán</a>
 									<?php } ?>
 							
 					</div>
