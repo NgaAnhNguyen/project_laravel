@@ -91,12 +91,9 @@ use Illuminate\Support\Facades\Session;
 									@if (!$cart || count($cart) == 0)
 										<!-- Nếu giỏ hàng trống -->
 										<a class="check_out" onclick="return alert('Bạn chưa có gì trong giỏ hàng, vui lòng thêm một sản phẩm')" href="#">Thanh toán</a>
-									@elseif ($customer_id != NULL)
+									@else
 										<!-- Nếu khách hàng đã đăng nhập -->
 										<a class="check_out" href="{{ URL::to('/checkout') }}">Thanh toán</a>
-									@else
-										<!-- Nếu khách hàng chưa đăng nhập -->
-										<a class="check_out" href="{{ URL::to('/login-checkout') }}">Thanh toán</a>
 									@endif
 								<div class="pull-right"><ul>
 									<li>Tổng tiền sản phẩm <span>{{number_format($totalcartPrice,0,',','.')}} đ</span></li>

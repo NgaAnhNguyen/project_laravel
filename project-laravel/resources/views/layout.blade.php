@@ -50,18 +50,25 @@
 										<li><a href="{{URL::to('/')}}" class="nav-link"><i class="fa fa-home"></i> Customer Dashboard</a></li>
 									@endif
 
-									<li><a href="{{URL::to('logout')}}" class="nav-link"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a></li>
-								@else
-									<li><a href="{{URL::to('/login')}}" class="nav-link"><i class="fa fa-sign-in"></i> Đăng nhập Người dùng</a></li>
-									<li><a href="{{URL::to('/admin')}}" class="nav-link"><i class="fa fa-lock"></i> Đăng nhập Admin</a></li>
-								@endif
-							</ul>
-					
-						</div>
-					</div>
-					<div class="col-sm-4 m-3">
-						<div class="logo pull-left ">
-							<a href="{{URL::to('trang-chu')}}"><img src="{{URL::to('frontend/img/home/logo.png')}}" alt="" /></a>
+							<li><a href="{{URL::to('logout')}}" class="nav-link"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a></li>
+						@else
+							<li><a href="{{URL::to('/login')}}" class="nav-link"><i class="fa fa-sign-in"></i> Đăng nhập Người dùng</a></li>
+							<li><a href="{{URL::to('/admin')}}" class="nav-link"><i class="fa fa-lock"></i> Đăng nhập Admin</a></li>
+						@endif
+					</ul>
+				</div>
+
+				</div>
+			</div>
+		</div><!--/header_top-->
+		
+		<div class="header-middle"><!--header-middle-->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="logo pull-left">
+							<a href="{{URL::to('dashboard')}}"><img src="{{URL::to('public/frontend/img/home/logo.png')}}" alt="" /></a>
+
 						</div>
 						
 					</div>
@@ -86,8 +93,13 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
-								<li class="dropdown"><a href="#">Sản phẩm</a>
-                                    
+								<li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
+                                    <ul role="menu" class="sub-menu">
+                                        <li><a href="{{URL::to('/dashboard')}}">Products</a></li>
+										<li><a href="{{URL::to('/dashboard')}}">Product Details</a></li> 
+                                    </ul>
+
+
                                 </li> 
 								<li><a href="{{URL::to('/gio-hang')}}">Giỏ hàng</a></li>
 								<li><a href="{{URL::to('/contact')}}">Liên hệ</a></li>
