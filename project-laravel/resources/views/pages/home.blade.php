@@ -2,7 +2,6 @@
 @section("content")
 <div class="features_items"><!--features_items-->
     <h2 class="title text-center" style="color:#022C64">Sản phẩm mới nhất</h2>
-
     @foreach($products as $key => $pro) <!-- Loop through products -->
     <div class="col-sm-4">
         <div class="product-image-wrapper">

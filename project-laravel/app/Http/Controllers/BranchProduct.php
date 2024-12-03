@@ -12,7 +12,10 @@ use Carbon\Carbon;
 class BranchProduct extends Controller
 {
     public function brand_by_id($brand_id, Request $request) 
+    
     {
+        $branch = DB::table('tbl_branch_product')->where('branch_id', $brand_id)->first();
+        
         $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
         $branch_product = DB::table('tbl_branch_product')->where('branch_status','1')->orderby('branch_id','desc')->get();
 

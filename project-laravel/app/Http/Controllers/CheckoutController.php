@@ -257,7 +257,7 @@ class CheckoutController extends Controller
         'updated_at' => now(),
     ]);
         // Chuyển hướng đến trang checkout
-        return Redirect::to('/verify-email-notice')->with('info', 'Please verify your email before proceeding to checkout.');
+        return Redirect::to('/checkout')->with('info', 'Please verify your email before proceeding to checkout.');
         
     }
     public function verify_email($token) {
