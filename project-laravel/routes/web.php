@@ -22,55 +22,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 
-Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
-
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
-
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
-
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-        ->name('password.request');
-
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-        ->name('password.email');
-
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->name('password.reset');
-
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-        ->name('password.store');
-});
 Route::post('/dashboard', [HomeController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('verify-email', EmailVerificationPromptController::class)
-        ->name('verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
-
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-        ->middleware('throttle:6,1')
-        ->name('verification.send');
-
-    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-        ->name('password.confirm');
-
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
-
-    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
-
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
-});
 
 
 
@@ -99,7 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+
 
 
 // Category, Brand homepage
@@ -136,8 +93,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/update-cart', [CartController::class, 'update_cart']);
     Route::post('/update-view-cart', [CartController::class, 'update_cart_quanlity']);
 
-
-
 // Branch Product
 Route::get('/all-branch-product', [BranchProduct::class, 'index'])->name('all-branch');
 Route::group(['prefix' => 'branches', 'as' => 'branches.'], function () {     
@@ -158,9 +113,22 @@ Route::get('/search-branch', [BranchProduct::class, 'searchBranch'])->name('sear
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
 
 
+Route::get('/checkout', [CheckoutController::class, 'checkout']);
+Route::get('/logout-checkout', [CheckoutController::class, 'logout_checkout']);
+Route::post('/add-customer', [CheckoutController::class, 'add_customer']);
+Route::post('/login', [CheckoutController::class, 'login_customer']);
+Route::get('/login', [CheckoutController::class, 'showLogin']);
+Route::post('/save-checkout-customer', [CheckoutController::class, 'save_checkout_customer']);
+
+
+
+Route::get('/forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm']);
+Route::post('/forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm']);
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm']);
 
 // Category, Brand homepage
 Route::get('/danh-muc-san-pham/{category_id}', [CategoryProducts::class, 'category_by_id']);

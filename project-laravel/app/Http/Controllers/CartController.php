@@ -26,7 +26,7 @@ class CartController extends Controller
     {
         // Kiểm tra xem người dùng đã đăng nhập chưa
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để xem giỏ hàng.');
+            return redirect()->to(url('/login'))->with('error', 'Bạn cần đăng nhập để xem giỏ hàng.');
         }
 
         // Xác thực dữ liệu yêu cầu
@@ -104,10 +104,11 @@ class CartController extends Controller
     public function add_cart_ajax(Request $request)
     {
         if (!Auth::check()) {
+            logger('Auth::check() = false');
             return response()->json([
                 'status' => 'error',
                 'message' => 'Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.',
-                'redirect' => route('login'),
+                'redirect' =>(url('/login')),
             ]);
         }
         

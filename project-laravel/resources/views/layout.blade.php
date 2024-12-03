@@ -17,6 +17,7 @@
 	<meta property="og:type" content="website" />
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
+
 	<link href="{{asset('frontend/css/bootstrap.min.css')}}" rel="stylesheet">
 
 	<link href="{{asset('frontend/css/font-awesome.min.css')}}" rel="stylesheet">
@@ -53,89 +54,89 @@
 						</div>
 					</div>
 					<div class="col-sm-6" style="float: right;">
-					<header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-        <div class="flex lg:justify-center lg:col-start-2">
-        </div>
-        
-        <nav class="-mx-3 flex flex-1 justify-end">
-            @auth
-            <a
-                href="{{ url('/dashboard') }}"
-                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-				{{ session('customer_name')}}
-            </a>
-            <form action="{{ URL::to('/logout')}}" method="POST" style="display:inline;">
+						<div class="login-buttons pull-right">
+							<ul class="nav navbar-nav">
+								@if (session('customer_id'))
+								<!-- Người dùng đã đăng nhập -->
+								<li>
+									<a href="#" class="nav-link">
+										<i class="fa fa-user"></i> {{ session('customer_name') }}
+									</a>
+								</li>
+
+								<!-- Form đăng xuất -->
+								<li>
+									<form action="{{ URL::to('/logout')}}" method="POST" style="display:inline;">
 										@csrf <!-- Bảo vệ CSRF -->
 										<button id="button-logout" style="margin: top 30px;" type="submit" class="nav-link" style="border: none; background: none;">
 											<i class="fa fa-sign-out-alt"></i> Đăng xuất
 										</button>
 									</form>
-            
-
-        
-            @else
-            <a
-                href="{{ route('login') }}"
-                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                Log in
-            </a>
-
-            @if (Route::has('register'))
-            <a
-                href="{{ route('register') }}"
-                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                Register
-            </a>
-            @endif
-            @endauth
-        </nav>
-      
-    </header>
+								</li>
+								@else
+								<!-- Người dùng chưa đăng nhập -->
+								<li>
+									<a href="{{ URL::to('/login') }}" class="nav-link">
+										<i class="fa fa-sign-in"></i> Đăng nhập
+									</a>
+								</li>
 
 
+								<li>
 
+								</li>
+								@endif
+							</ul>
+
+						</div>
+					</div>
+				</div>
+
+
+			</div><!--/header_top-->
 
 
 
-				<div class="header-bottom"><!--header-bottom-->
-					<div class="container">
-						<div class="row">
-							<div class="col-sm-8">
-								<div class="navbar-header">
-									<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-										<span class="sr-only">Toggle navigation</span>
-										<span class="icon-bar"></span>
-										<span class="icon-bar"></span>
-										<span class="icon-bar"></span>
-									</button>
-								</div>
-								<div class="mainmenu pull-left">
-									<ul class="nav navbar-nav collapse navbar-collapse">
-										<li><a href="{{URL::to('/trang-chu')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
-										<li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
-											<ul role="menu" class="sub-menu">
-												<li><a href="{{URL::to('/trang-chu')}}">Products</a></li>
-												<li><a href="{{URL::to('/trang-chu')}}">Product Details</a></li>
-											</ul>
-										</li>
-										<li><a href="{{URL::to('/gio-hang')}}">Giỏ hàng</a></li>
-										<li><a href="{{URL::to('/contact')}}">Liên hệ</a></li>
-									</ul>
-								</div>
+			<div class="header-bottom"><!--header-bottom-->
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8">
+							<div class="navbar-header">
+								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+									<span class="sr-only">Toggle navigation</span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</button>
 							</div>
-							<div class="col-sm-4">
-								<div class="search_box pull-right" style="color:cornflowerblue">
-									<form action="{{URL::to('/tim-kiem')}}" method="POST">
-										{{ csrf_field() }}
-										<input type="text" placeholder="Tìm kiếm sản phẩm" name="keywordsubmit" />
-										<input type="submit" value="Tìm kiếm" style="margin-top:0; background-color:cornflowerblue; color:white" class="btn btn-primary">
-									</form>
-								</div>
+							<div class="mainmenu pull-left">
+								<ul class="nav navbar-nav collapse navbar-collapse">
+									<li><a href="{{URL::to('/trang-chu')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
+									<li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
+										<ul role="menu" class="sub-menu">
+											<li><a href="{{URL::to('/trang-chu')}}">Products</a></li>
+											<li><a href="{{URL::to('/trang-chu')}}">Product Details</a></li>
+										</ul>
+									</li>
+									<li><a href="{{URL::to('/gio-hang')}}">Giỏ hàng</a></li>
+									<li><a href="{{URL::to('/contact')}}">Liên hệ</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="search_box pull-right" style="color:cornflowerblue">
+								<form action="{{URL::to('/tim-kiem')}}" method="POST">
+									{{ csrf_field() }}
+									<input type="text" placeholder="Tìm kiếm sản phẩm" name="keywordsubmit" />
+									<input type="submit" value="Tìm kiếm" style="margin-top:0; background-color:cornflowerblue; color:white" class="btn btn-primary">
+								</form>
 							</div>
 						</div>
 					</div>
-				</div><!--/header-bottom-->
+				</div>
+			</div><!--/header-bottom-->
 	</header><!--/header-->
+
 
 
 
@@ -189,18 +190,18 @@
 							</div>
 						</div>
 
-					
+
 					</div>
 					<div class="col-sm-9 ">
-				@yield('content')
-			</div>
-			</div>
+						@yield('content')
+					</div>
+				</div>
 			</div>
 
-				</div>
-				
 			</div>
-			
+
+			</div>
+
 
 
 			<!-- Cột bên phải (nội dung chính) -->
@@ -372,6 +373,7 @@
 		<script>
 			$(document).ready(function() {
 				$('.add-to-cart').click(function() {
+					console.log('Button clicked');
 					var id = $(this).data('id_product');
 					var cart_product_id = $('.product_id_' + id).val();
 					var cart_product_name = $('.product_name_' + id).val();
@@ -382,6 +384,9 @@
 					$.ajax({
 						url: '{{ URL::to("/add-cart-ajax") }}',
 						method: 'POST',
+						headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // CSRF token
+    },
 						data: {
 							cart_product_id: cart_product_id,
 							cart_product_name: cart_product_name,
@@ -391,21 +396,22 @@
 							_token: cart_product_token
 						},
 						success: function(data) {
-							swal({
+							if (data.status === 'error' && data.redirect) {
+								window.location.href = data.redirect; // Chuyển hướng đến trang đăng nhập
+							} else {
+								swal({
 									title: "Đã thêm sản phẩm vào giỏ hàng",
 									text: "Bạn có thể mua hàng tiếp hoặc tới giỏ hàng để tiến hành thanh toán",
 									icon: "success",
 									showCancelButton: true,
 									cancelButtonText: "Xem tiếp",
-
 									confirmButtonClass: "btn-success",
 									confirmButtonText: "Đi đến giỏ hàng",
 									closeOnConfirm: false,
 								}, function() {
-									window.location.href = "{{url('/gio-hang')}}";
-								}
-
-							);
+									window.location.href = "{{ URL::to('/gio-hang') }}";
+								});
+							}
 
 						},
 						error: function(data, textStatus, errorThrown) {

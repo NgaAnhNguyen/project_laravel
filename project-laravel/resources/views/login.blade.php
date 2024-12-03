@@ -5,7 +5,7 @@
 				<div class="col-sm-4 col-sm-offset-1">
 				<div class="login-form"><!--login form-->
 				<h2>Đăng nhập</h2>
-				<form action="{{ route('login') }}" method="POST"> <!-- Using named route for better flexibility -->
+				<form action="{{ url('/login') }}" method="POST"> <!-- Using named route for better flexibility -->
 					@if ($message = Session::get('message')) <!-- Displaying session message -->
 						<span>{{ $message }}</span>
 						{{ Session::forget('message') }}

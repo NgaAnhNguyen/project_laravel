@@ -907,14 +907,12 @@
 </head>
 
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
-   
-
 
     <main class="mt-6">
         @extends('layout')
         @section("content")
         <div class="features_items"><!--features_items-->
-            <h2 class="title text-center">Sản phẩm mới nhất</h2>
+            <h2 class="title text-center">Sản phẩm mới nhất ưl</h2>
 
             @foreach($products as $key => $pro) <!-- Loop through products -->
             <div class="col-sm-4">
@@ -939,8 +937,8 @@
 
                                 <!-- Add to cart button -->
                                 <button type="button" class="btn btn-default add-to-cart" data-id_product="{{$pro->product_id}}">
-                                    <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-                                </button>
+                            <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+                        </button>
                             </div>
                         </form>
                     </div>

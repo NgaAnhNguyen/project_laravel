@@ -1,6 +1,4 @@
 @extends('layout')
-
-
 @section("content")
 
 @foreach($product_by_id as $key => $productDetail)
