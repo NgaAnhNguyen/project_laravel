@@ -122,14 +122,6 @@ Route::post('/login', [CheckoutController::class, 'login_customer']);
 Route::get('/login', [CheckoutController::class, 'showLogin']);
 Route::post('/save-checkout-customer', [CheckoutController::class, 'save_checkout_customer']);
 
-
-
-Route::get('/forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm']);
-Route::post('/forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
-
-Route::post('/reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm']);
-Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm']);
-
 // Category, Brand homepage
 Route::get('/danh-muc-san-pham/{category_id}', [CategoryProducts::class, 'category_by_id']);
 // Route::get('/thuong-hieu-san-pham/{brand_id}', [BranchProduct::class, 'brand_by_id']);
