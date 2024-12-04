@@ -21,7 +21,7 @@ use App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
-
+use Illuminate\Support\Facades\Auth;
 
 Route::post('/dashboard', [HomeController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
@@ -45,20 +45,22 @@ Route::middleware('auth')->group(function () {
     Route::post('/add-cart-ajax', [CartController::class, 'add_cart_ajax']);
     Route::post('/update-cart', [CartController::class, 'update_cart']);
     Route::post('/update-view-cart', [CartController::class, 'update_cart_quanlity']);
-
-
+    Route::post('/save-order', [CheckoutController::class, 'save_order']);
+    Route::get('/payment', [CheckoutController::class, 'payment']);
     Route::get('/checkout', [CheckoutController::class, 'checkout']);
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::post('/confirm-order', [CheckoutController::class, 'confirm_order']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/admin_layout', [AdminController::class,'admin_layout']);
+Route::post('/admin_layout', [AdminController::class,'admin_layout']);
+Route::get('/admin-login', [AdminController::class, 'index']);
 
-
-
-
+Route::post('/admin-dashboard',[AdminController::class,'dashboard']);
 // Category, Brand homepage
 Route::get('/danh-muc-san-pham/{category_id}', [CategoryProducts::class, 'category_by_id']);
 Route::get('/thuong-hieu-san-pham/{brand_id}', [BranchProduct::class, 'brand_by_id']);
@@ -119,7 +121,7 @@ Route::get('/checkout', [CheckoutController::class, 'checkout']);
 Route::get('/logout-checkout', [CheckoutController::class, 'logout_checkout']);
 Route::post('/add-customer', [CheckoutController::class, 'add_customer']);
 Route::post('/login', [CheckoutController::class, 'login_customer']);
-Route::get('/login', [CheckoutController::class, 'showLogin']);
+Route::get('/login', [CheckoutController::class, 'showLogin'])->name('login');;
 Route::post('/save-checkout-customer', [CheckoutController::class, 'save_checkout_customer']);
 
 // Category, Brand homepage
@@ -131,12 +133,27 @@ Route::get('/danh-muc-san-pham/{category_id}', [CategoryProducts::class, 'catego
 
 Route::get('/chi-tiet-san-pham/{product_id}', [ProductController::class, 'detail_product']);
 
+Route::post('/save-order', [CheckoutController::class, 'save_order']);
+Route::get('/manage-order', [CheckoutController::class, 'manage_order']);
+
+Route::get('/view-order-detail/{order_id}', [CheckoutController::class, 'view_order_detail']);
+Route::get('/delete-order/{order_id}', [CheckoutController::class, 'delete_order']);
 
 
 // Category Product
+
+Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {   
+Route::get('/add-category-product', [CategoryProducts::class, 'add_category_product']);
 Route::get('/all-category-product', [CategoryProducts::class, 'all_category_product']);
+Route::get('/edit-category-product/{categoryProduct_id}', [CategoryProducts::class, 'edit_category_product']);
+Route::get('/delete-category-product/{categoryProduct_id}', [CategoryProducts::class, 'delete_category_product']);
 
+Route::get('/unactive-category/{categoryProduct_id}', [CategoryProducts::class, 'unactive_category_product']);
+Route::get('/active-category/{categoryProduct_id}', [CategoryProducts::class, 'active_category_product']);
 
+Route::post('/save-category-product', [CategoryProducts::class, 'save_category_product']);
+Route::post('/update-category-product/{categoryProduct_id}', [CategoryProducts::class, 'update_category_product']);
+});
 
 Route::get('/forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm']);
 Route::post('/forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
@@ -184,3 +201,10 @@ Route::get('/chi-tiet-san-pham/{product_id}', [ProductController::class, 'detail
 Route::post('/logout',[CheckoutController::class,'logout']);
 
 Route::post('/add-customer',[CheckoutController::class,'add_customer']);
+
+//Login with google
+Route::get('/auth/google',[CheckoutController::class,'redirectToGoogle']);
+Route::get('auth/google/callback',[CheckoutController::class,'handleGoogleCallback']);
+
+Route::get('/auth/facebook',[CheckoutController::class,'redirectToFacebook']);
+Route::get('auth/facebook/callback',[CheckoutController::class,'handleFacebookCallback']);

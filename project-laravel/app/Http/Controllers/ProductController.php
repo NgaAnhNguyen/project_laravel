@@ -24,11 +24,16 @@ class ProductController extends Controller
 
         $product_by_id = DB::table('tbl_product')->join('tbl_branch_product','tbl_product.branch_id','=','tbl_branch_product.branch_id')
         ->join('tbl_category_product','tbl_product.category_id','=','tbl_category_product.category_id')->where('tbl_product.product_id',$product_id)->get();
-    
+        $category_id = null;
         foreach($product_by_id as $key => $product) {
             $category_id = $product->category_id;
         }
-        
+        $meta_title = '';
+    $meta_desc = '';
+    $meta_keywords = 'Default keywords';
+    $meta_canonical = $request->url();
+    $image_og = '';
+
         $relate_product = DB::table('tbl_product')->join('tbl_branch_product','tbl_product.branch_id','=','tbl_branch_product.branch_id')
         ->join('tbl_category_product','tbl_product.category_id','=','tbl_category_product.category_id')
         ->where('tbl_product.category_id',$category_id)->whereNotIn('tbl_product.product_id',[$product_id])->get();

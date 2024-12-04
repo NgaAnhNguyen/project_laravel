@@ -26,7 +26,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use App\Rules\Captcha;
-
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Laravel\Socialite\Facades\Socialite;
 
 session_start();
 
@@ -44,6 +46,85 @@ class CheckoutController extends Controller
         $image_og = "images/og-image.jpg";   // Example image path for Open Graph
         return view('login', compact('meta_desc', 'meta_title', 'meta_keywords', 'meta_canonical', 'image_og', 'products', 'category_product', 'branch_product'));
     }
+    public function redirectToGoogle()
+{
+    return Socialite::driver('google')->redirect();
+}
+
+public function handleGoogleCallback()
+{
+    try {
+        // Lấy thông tin người dùng từ Google
+        $googleUser = Socialite::driver('google')->user(); // Dùng stateless nếu là API
+        $user = User::where('email', $googleUser->getEmail())->first();
+
+        if (!$user) {
+            // Nếu người dùng chưa tồn tại, tạo mới
+            $user = User::create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'password' => bcrypt(Str::random(16)), // Tạo mật khẩu ngẫu nhiên
+            ]);
+        }
+
+        // Đăng nhập người dùng
+        Auth::login($user);
+        session(['customer_id' => $user->id, 'customer_name' => $user->name]);
+
+        return Redirect::to('/welcome')->with('success', 'Đăng nhập thành công!');
+        
+    } catch (Exception $e) {
+        // Xử lý lỗi
+        Log::error('Google Login Error: ' . $e->getMessage());
+        return redirect()->route('login')->with('error', 'Đăng nhập bằng Google thất bại. Vui lòng thử lại.');
+    }
+}
+
+public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+    public function handleFacebookCallback()
+    {
+        try {
+            $user = Socialite::driver('facebook')->user();
+    
+            // Ensure the user has an email
+            if (!$user->email) {
+                return redirect()->route('login')->withErrors('Facebook account không có email!');
+            }
+    
+            // Check if the user already exists
+            $findUser = User::where('facebook_id', $user->id)->first();
+    
+            if ($findUser) {
+                Auth::login($findUser);
+                session(['customer_id' => $user->id, 'customer_name' => $user->name]);
+                return Redirect::to('/welcome');
+            } else {
+                // Create new user with encrypted dummy password
+                $newUser = User::updateOrCreate(
+                    ['email' => $user->email],
+                    [
+                        'name' => $user->name,
+                        'facebook_id' => $user->id,
+                        'password' => bcrypt(Str::random(16))  // Generate a secure random password
+                    ]
+                );
+    
+                Auth::login($newUser);
+                session(['customer_id' => $user->id, 'customer_name' => $user->name]);
+                return Redirect::to('/welcome')->with('success', 'Đăng nhập thành công!');
+            }
+    
+        } catch (Exception $e) {
+            Log::error('Facebook login error: ' . $e->getMessage());
+            return Redirect::to('/login')->withErrors('Có lỗi xảy ra trong quá trình đăng nhập với Facebook.');
+        }
+    }
+    
+
     public function store(Request $request)
     {
         // Lấy shipping_id từ session
@@ -82,7 +163,7 @@ class CheckoutController extends Controller
             $data_detail_order['product_sales_quanlity'] = $v_content->qty; // Gán số lượng bán
     
             // Lưu chi tiết đơn hàng vào cơ sở dữ liệu
-            DB::table('tbl_order_details')->insert($data_detail_order);
+            DB::table('tbl_order_detail')->insert($data_detail_order);
         }
     
         // Xử lý thanh toán
@@ -148,19 +229,21 @@ class CheckoutController extends Controller
         $order->save();
     
         // Thêm thông tin chi tiết đơn hàng
-        if (Session::has('cart')) {
-            foreach (Session::get('cart') as $key => $cart) {
-                $orderDetail = new OrderDetail();
-                $orderDetail->order_code = $order_code;
-                $orderDetail->product_id = $cart['product_id'];
-                $orderDetail->product_name = $cart['product_name'];
-                $orderDetail->product_price = $cart['product_price'];
-                $orderDetail->product_sales_quanlity = $cart['product_qty'];
-                $orderDetail->order_feeship = $data['feeship'] ?? 0; // Mặc định là 0 nếu không có phí ship
-                $orderDetail->order_coupon = $data['coupon'] ?? null; // Có thể null nếu không có mã giảm giá
-                $orderDetail->save();
-            }
-        }
+       if (Session::has('cart') && !empty(Session::get('cart'))) {
+    foreach (Session::get('cart') as $key => $cart) {
+        $orderDetail = new OrderDetail();
+        $orderDetail->order_code = $order_code; // The order code must be the same
+        $orderDetail->product_id = $cart['product_id'];
+        $orderDetail->product_name = $cart['product_name'];
+        $orderDetail->product_price = $cart['product_price'];
+        $orderDetail->product_sales_quantity = $cart['product_qty']; // Correct field name (fix typo if needed)
+        $orderDetail->order_feeship = $data['feeship'] ?? 0; // Default to 0 if no fee is provided
+        $orderDetail->order_coupon = $data['coupon'] ?? null; // Null if no coupon
+        $orderDetail->save();
+    }
+} else {
+    return response()->json(['error' => 'Giỏ hàng trống hoặc không hợp lệ.'], 400);
+}
     
         // Xóa session không cần thiết sau khi xử lý xong
         Session::forget('fee');
@@ -317,6 +400,8 @@ class CheckoutController extends Controller
         $meta_keywords = "giao hàng checkout";
         $meta_canonical = $request->url();
         $image_og = "";
+      $cartItems = Cart::getContent();
+        $totalcartPrice = Cart::getTotal();
         $city = City::orderBy('matp')->get();
         $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
         $branch_product = DB::table('tbl_branch_product')->where('branch_status','1')->orderby('branch_id','desc')->get();
@@ -325,7 +410,8 @@ class CheckoutController extends Controller
         ->with('meta_desc',$meta_desc)
         ->with('meta_keywords',$meta_keywords)
         ->with('meta_canonical',$meta_canonical)
-        ->with('image_og',$image_og)->with('cityData',$city);
+        ->with('image_og',$image_og)->with('cityData',$city)
+        ->with('totalcartPrice', $totalcartPrice);
     }
 
     public function save_checkout_customer(Request $request)
@@ -349,23 +435,95 @@ class CheckoutController extends Controller
     
         return Redirect::to('/payment');
     }
-    
-    public function payment(Request $request)
-    {
-        $meta_title = "Chọn phương thức thanh toán";
-        $meta_desc = "Trang Chọn phương thức thanh toán của bạn";
-        $meta_keywords = "thanh toán payment";
-        $meta_canonical = $request->url();
-        $image_og = "";
-        $cate_product = DB::table('tbl_category_product')->where('category_status', '1')->orderby('category_id', 'desc')->get();
-        $branch_product = DB::table('tbl_branch_product')->where('branch_status', '1')->orderby('branch_id', 'desc')->get();
-        return view('pages.checkout.payment')->with('category_product', $cate_product)->with('branch_product', $branch_product)
-            ->with('meta_title', $meta_title)
-            ->with('meta_desc', $meta_desc)
-            ->with('meta_keywords', $meta_keywords)
-            ->with('meta_canonical', $meta_canonical)
-            ->with('image_og', $image_og);
-    }
+    public function save_order(Request $request) {
+        // insert payment method
+          $data = array();
+          $data['payment_method'] = $request->payment_value;
+          $data['payment_status'] = "Đang chờ xử lý";
+  
+          $payment_id = DB::table('tbl_payment')->insertGetId($data);
+  
+          $data_order = array();
+          $data_order['customer_id'] = Session::get('customer_id');
+          $data_order['shipping_id'] = Session::get('shipping_id', 0);
+          $data_order['payment_id'] = $payment_id;
+          $data_order['order_total'] = Cart::getTotal();
+          $data_order['order_status'] = 'Đang chờ xử lý';
+          $order_id = DB::table('tbl_order')->insertGetId($data_order);
+  
+          $data_detail_order = array();
+          $content = Cart::getContent();
+          
+          foreach($content as $v_content) {
+              $data_detail_order['order_id'] = $order_id;
+              $data_detail_order['product_id'] = $v_content->id;
+              $data_detail_order['product_name'] = $v_content->name;
+              $data_detail_order['product_price'] = $v_content->price;
+              $data_detail_order['product_sales_quanlity'] =  $v_content->qty;
+              DB::table('tbl_order_detail')->insert($data_detail_order);
+          }
+          if($data['payment_method'] == 1) {
+            Cart::clear() ;
+              echo "Đơn này trả Thẻ ATM";
+          }elseif($data['payment_method'] == 2) {
+            Cart::clear() ;
+              $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
+              $branch_product = DB::table('tbl_branch_product')->where('branch_status','1')->orderby('branch_id','desc')->get();
+              
+              $meta_title = "Đặt hàng thành công";
+              $meta_desc = "";
+              $meta_keywords = "";
+              $meta_canonical = $request->url();
+              $image_og = "";
+  
+              return view('pages.checkout.handcash')->with('category_product',$cate_product)->with('branch_product',$branch_product)
+              ->with('meta_title',$meta_title)
+              ->with('meta_desc',$meta_desc)
+              ->with('meta_keywords',$meta_keywords)
+              ->with('meta_canonical',$meta_canonical)
+              ->with('image_og',$image_og);
+          }elseif($data['payment_method'] == 3) {
+            Cart::clear() ;
+              echo "Đơn này trả Thẻ ATM";
+          }
+      }
+      public function payment(Request $request)
+      {
+          $meta_title = "Chọn phương thức thanh toán";
+          $meta_desc = "Trang Chọn phương thức thanh toán của bạn";
+          $meta_keywords = "thanh toán payment";
+          $meta_canonical = $request->url();
+          $image_og = "";
+  
+          $cart = Session::get('cart', []);
+          Session::put('cart', $cart); // Lưu giỏ hàng vào session
+          
+          // Tính tổng tiền của đơn hàng
+          $totalAmount = $this->calculateTotal($cart);
+  
+          // Lấy phí ship từ session
+          $shippingFee = Session::get('fee', 0);
+  
+          // Tính tổng số tiền bao gồm phí ship
+          $totalAmountWithShipping = $totalAmount + $shippingFee;
+  
+          
+          $cate_product = DB::table('tbl_category_product')->where('category_status', '1')->orderby('category_id', 'desc')->get();
+          $branch_product = DB::table('tbl_branch_product')->where('branch_status', '1')->orderby('branch_id', 'desc')->get();
+          return view('pages.checkout.payment')->with('category_product', $cate_product)->with('branch_product', $branch_product)
+               ->with('category_product', $cate_product)
+              ->with('branch_product', $branch_product)
+              ->with('meta_title', $meta_title)
+              ->with('meta_desc', $meta_desc)
+              ->with('meta_keywords', $meta_keywords)
+              ->with('meta_canonical', $meta_canonical)
+              ->with('image_og', $image_og)
+              ->with('cart', $cart)  // Truyền giỏ hàng vào view
+              ->with('totalAmount', $totalAmount)  // Truyền tổng tiền vào view
+              ->with('shippingFee', $shippingFee)  // Truyền phí ship vào view
+              ->with('totalAmountWithShipping', $totalAmountWithShipping);
+              
+      }
 
     public function logout_checkout() {
         Session::put('shipping_id',null);
@@ -411,8 +569,8 @@ class CheckoutController extends Controller
     {
 
         $this->AuthLogin();
-        $all_order = DB::table('tbl_order')->join('tbl_customer', 'tbl_order.customer_id', '=', 'tbl_customer.customer_id')
-            ->select('tbl_order.*', 'tbl_customer.customer_name')
+        $all_order = DB::table('tbl_order')->join('tbl_customers', 'tbl_order.customer_id', '=', 'tbl_customers.customer_id')
+            ->select('tbl_order.*', 'tbl_customers.customer_name')
             ->orderby('tbl_order.order_id', 'desc')->get();
 
         return view('admin.manage_order')->with('all_order', $all_order);
@@ -421,19 +579,19 @@ class CheckoutController extends Controller
     {
         $this->AuthLogin();
         $order_by_id = DB::table('tbl_order')
-            ->join('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_order.customer_id')
-            ->join('tbl_shipping', 'tbl_shipping.shipping_id', '=', 'tbl_order.shipping_id')
-            ->join('tbl_order_details', 'tbl_order_details.order_id', '=', 'tbl_order.order_id')
+            ->join('tbl_customers', 'tbl_customers.customer_id', '=', 'tbl_order.customer_id')
+            ->join('tbl_shipping', 'tbl_shipping.id', '=', 'tbl_order.shipping_id')
+            ->join('tbl_order_detail', 'tbl_order_detail.order_id', '=', 'tbl_order.order_id')
             ->where('tbl_order.order_id', $order_id)
-            ->select('tbl_order.*', 'tbl_customer.*', 'tbl_shipping.*', 'tbl_order_details.*')->first();
-
-        $products = DB::table('tbl_order_details')->where('tbl_order_details.order_id', $order_id)->get();
+            ->select('tbl_order.*', 'tbl_customers.*', 'tbl_shipping.*', 'tbl_order_detail.*')->first();
+           
+        $products = DB::table('tbl_order_detail')->where('tbl_order_detail.order_id', $order_id)->get();
         return view('admin.view_order')->with('order_by_id', $order_by_id)->with('order_list', $products);
     }
     public function delete_order($order_id)
     {
         $this->AuthLogin();
-        DB::table('tbl_order_details')->where('order_id', $order_id)->delete();
+        DB::table('tbl_order_detail')->where('order_id', $order_id)->delete();
         DB::table('tbl_order')->where('order_id', $order_id)->delete();
         Session::put('message', 'Xóa đơn hàng thành công');
         return Redirect::to('/manage-order');
@@ -455,7 +613,8 @@ class CheckoutController extends Controller
 
         // Lấy giỏ hàng từ session, nếu không có thì trả về mảng rỗng
         $cart = Session::get('cart', []);
-
+       // Thêm sản phẩm mới
+        Session::put('cart', $cart); // Lưu giỏ hàng vào session
         // Tính tổng tiền của đơn hàng
         $totalAmount = $this->calculateTotal($cart);
 

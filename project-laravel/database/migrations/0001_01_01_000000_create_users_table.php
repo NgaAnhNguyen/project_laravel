@@ -23,6 +23,13 @@ return new class extends Migration
                 $table->boolean('is_email_verified')->default(0);
             }
             $table->boolean('is_active')->default(false);
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('google_id')->nullable()->unique();
+            });
+            Schema::table('users', function ($table) {
+                $table->string('facebook_id')->nullable();
+            });
+    
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -7,7 +7,10 @@
                         <header class="panel-heading">
                             Thêm sản phẩm
                         </header>
-                        <?php 
+                        <?php
+
+use Illuminate\Support\Facades\Session;
+
                             $message = Session::get('message');
                             if($message) {
                                 echo "<span class='text-alert'>".$message."</span>";

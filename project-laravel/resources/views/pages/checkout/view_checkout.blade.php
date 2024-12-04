@@ -81,7 +81,10 @@
 									<option value="1">Chuyển khoản</option>
 								</select>
 							</div>
-
+							<input type="button" class="btn btn-primary sm-10 confirm-order" value="Xác nhận đơn hàng">
+							<?php
+				$totalcartPrice = 0;
+			?>
 								@if(session()->has('message'))
 								<div class="alert alert-danger">
 									{{ session()->get('message') }}
@@ -158,12 +161,12 @@
 													<a class="check_out" onclick="return alert('Bạn chưa có gì trong giỏ hàng, vui lòng thêm một sản phẩm')" href="#">Thanh toán</a>
 													@elseif ($customer_id != NULL)
 													<!-- Nếu khách hàng đã đăng nhập -->
-													<a class="check_out" href="{{ URL::to('/checkout') }}">Thanh toán</a>
+													<a class="check_out" href="{{ URL::to('/payment') }}">Thanh toán</a>
 													@else
 													<!-- Nếu khách hàng chưa đăng nhập -->
 													<a class="check_out" href="{{ URL::to('/login-checkout') }}">Thanh toán</a>
 													@endif
-													<div class="pull-right">
+													<!-- <div class="pull-right">
 														<ul>
 															<li>Tổng tiền sản phẩm: <span>{{number_format($totalcartPrice,0,',','.')}} đ</span></li>
 
@@ -206,7 +209,7 @@
 															?>
 
 														</ul>
-													</div>
+													</div> -->
 												
 												</td>
 											</tr>
@@ -214,25 +217,7 @@
 
 										</tbody>
 									</form>
-									<tr>
-										<td>
-											<form action="{{ URL::to('/check-coupon') }}" method="POST">
-												@csrf
-												<input
-													type="text"
-													name="coupon_code"
-													value="{{ optional(Session::get('coupon')[0])['coupon_code'] ?? '' }}"
-													class="form-control"
-													placeholder="Nhập mã giảm giá">
-												@if(Session::get('coupon'))
-												<a href="{{ URL::to('/unset-coupon') }}" class="btn btn-danger" style="width: 100%;">Xóa mã giảm giá</a>
-												@else
-												<input type="submit" class="btn btn-warning" style="width: 100%;" value="Áp dụng mã giảm giá">
-												@endif
-											</form>
-										</td>
-
-									</tr>
+									
 									@else
 									<tr>
 										<td colspan="5">

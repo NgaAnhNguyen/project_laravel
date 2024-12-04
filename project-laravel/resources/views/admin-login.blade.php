@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Session;
 				}
 			?>
 		</span>
-		<form action="{{URL::to('/admin_dashboard')}}" method="post">
+		<form action="{{URL::to('/admin-dashboard')}}" method="post">
 			{{ csrf_field() }}
 			<ul style="list-style-type: circle;margin-left: 18px;">
 			@foreach($errors->all() as $error) 

@@ -26,7 +26,7 @@ class CartController extends Controller
     {
         // Kiểm tra xem người dùng đã đăng nhập chưa
         if (!Auth::check()) {
-            return redirect('/login')->with('error', 'Bạn cần đăng nhập để xem giỏ hàng.');
+            return redirect()->to(url('/login'))->with('error', 'Bạn cần đăng nhập để xem giỏ hàng.');
         }
 
         // Xác thực dữ liệu yêu cầu

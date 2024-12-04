@@ -14,24 +14,28 @@
           </tr>
         </thead>
         <tbody>
-          
+
           <tr>
-          
-            <td>{{$order_by_id->customer_name}}</td>
-            <td>{{$order_by_id->customer_phone}}</td>
+
+            @if ($order_by_id)
+            <td>{{ $order_by_id->customer_name }}</td>
+            <td>{{ $order_by_id->customer_phone }}</td>
+            @else
+            <td colspan="2">Không tìm thấy thông tin khách hàng.</td>
+            @endif
           </tr>
-          
+
         </tbody>
       </table>
     </div>
-    
+
   </div>
 </div>
 <br>
 <div class="table-agile-info">
   <div class="panel panel-default">
     <div class="panel-heading">
-     THÔNG TIN VẬN CHUYỂN
+      THÔNG TIN VẬN CHUYỂN
     </div>
     <div class="table-responsive">
       <table class="table table-striped b-t b-light">
@@ -44,17 +48,17 @@
           </tr>
         </thead>
         <tbody>
-          
+
           <tr>
             <td>{{$order_by_id->shipping_name}}</td>
             <td>{{$order_by_id->shipping_phone}}</td>
             <td>{{$order_by_id->shipping_address}}</td>
             <!-- <td></td> -->
           </tr>
-          
+
         </tbody>
       </table>
-      
+
     </div>
     <span style="margin: 15px 10px;
     display: inline-block;
@@ -78,7 +82,7 @@
           </tr>
         </thead>
         <tbody>
-            @foreach($order_list as $v_order_list)
+          @foreach($order_list as $v_order_list)
           <tr>
             <td>{{ $v_order_list->product_name }}</td>
             <td>{{ $v_order_list->product_sales_quanlity }}</td>
@@ -86,11 +90,11 @@
             <td><b>{{ number_format($v_order_list->product_price*$v_order_list->product_sales_quanlity).' VND' }}</b></td>
           </tr>
           @endforeach
-          
+
         </tbody>
       </table>
     </div>
-    
+
   </div>
 </div>
 @endsection

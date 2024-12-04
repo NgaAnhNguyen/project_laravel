@@ -5,7 +5,7 @@
 <div class="product-details"><!--product-details-->
     <div class="col-sm-5">
         <div class="view-product">
-            <img src="{{URL::to('public/upload/product/'.$productDetail->product_image)}}" alt="" />
+            <img src="{{URL::to('upload/product/'.$productDetail->product_image)}}" alt="" />
             <h3>ZOOM</h3>
         </div>
         <div id="similar-product" class="carousel slide" data-ride="carousel">
@@ -42,10 +42,10 @@
     </div>
     <div class="col-sm-7">
         <div class="product-information"><!--/product-information-->
-            <img src="{{URL::to('public/frontend/img/product-details/new.jpg')}}" class="newarrival" alt="" />
+            <img src="{{URL::to('frontend/img/product-details/new.jpg')}}" class="newarrival" alt="" />
             <h2>{{$productDetail->product_name}}</h2>
-            <p>Mã đồng hồ: {{$productDetail->product_id}}</p>
-            <img src="{{URL::to('public/frontend/img/product-details/rating.png')}}" alt="" />
+            <p>Mã: {{$productDetail->product_id}}</p>
+            <img src="{{URL::to('/frontend/img/product-details/rating.png')}}" alt="" />
             <form action="{{URL::to('/save-cart')}}" method="POST">
             {{ csrf_field() }}
             <span>
@@ -53,7 +53,7 @@
                 <label>Số lượng:</label>
                 <input name="productID" type="hidden" value="{{ $productDetail->product_id }}"/>
                 <input name="quanlity" type="number" value="1" min="1"/>
-                <button type="submit" class="btn btn-fefault cart">
+                <button type="submit" class="btn btn-fefault cart add-to-cart" >
                     <i class="fa fa-shopping-cart"></i>
                     Thêm vào giỏ hàng
                 </button>

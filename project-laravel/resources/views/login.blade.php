@@ -25,6 +25,10 @@
 					
 					<button type="submit" class="btn btn-default">Đăng nhập</button>
 				</form>
+				<div class="social-login">
+                <a href="{{URL::to('/auth/google')}}" class="btn btn-danger">Đăng nhập bằng Google</a>
+                <a href="{{URL::to('/auth/facebook')}}" class="btn btn-primary">Đăng nhập bằng Facebook</a>
+            </div>
 			</div><!--/login form-->
 				</div>
 				

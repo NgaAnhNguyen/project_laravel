@@ -111,13 +111,8 @@
 							</div>
 							<div class="mainmenu pull-left">
 								<ul class="nav navbar-nav collapse navbar-collapse">
-									<li><a href="{{URL::to('/trang-chu')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
-									<li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
-										<ul role="menu" class="sub-menu">
-											<li><a href="{{URL::to('/trang-chu')}}">Products</a></li>
-											<li><a href="{{URL::to('/trang-chu')}}">Product Details</a></li>
-										</ul>
-									</li>
+									<li><a href="{{URL::to('/')}}" class="active" style="color:cornflowerblue">Trang chủ</a></li>
+									
 									<li><a href="{{URL::to('/gio-hang')}}">Giỏ hàng</a></li>
 									<li><a href="{{URL::to('/contact')}}">Liên hệ</a></li>
 								</ul>
